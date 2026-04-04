@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مُعدل الترجمة الاحترافي - ألوان وحواف</title>
+    <title>مُعدل الترجمة الاحترافي - حجم الخط والألوان</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
             paint-order: stroke fill;
             text-shadow: none;
             transition: all 0.2s ease;
-            white-space: nowrap; /* منع المسافات المقطعة في المعاينة */
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -25,7 +25,7 @@
     <!-- Header -->
     <header class="bg-slate-900 text-white p-6 shadow-xl text-center mb-8 border-b-4 border-indigo-500">
         <h1 class="text-2xl font-bold">مُعدل التوقيت والتنسيق الشامل</h1>
-        <p class="text-slate-400 mt-1 text-sm">تعديل الوقت، الألوان، وحجم الحواف بدقة</p>
+        <p class="text-slate-400 mt-1 text-sm">تعديل الوقت، الألوان، حجم الخط، والحواف بدقة</p>
     </header>
 
     <main class="max-w-3xl mx-auto px-4">
@@ -47,21 +47,27 @@
         <div id="main-ui" class="hidden space-y-6 animate-pop">
             
             <!-- Live Preview -->
-            <div class="bg-slate-800 rounded-3xl p-10 text-center shadow-inner relative overflow-hidden flex items-center justify-center">
+            <div class="bg-slate-800 rounded-3xl p-10 text-center shadow-inner relative overflow-hidden flex items-center justify-center min-h-[160px]">
                 <div class="absolute top-2 right-4 text-[10px] text-slate-500 uppercase font-bold tracking-widest">معاينة مباشرة</div>
-                <div id="text-preview" class="text-3xl font-bold">نموذج نص الترجمة الموحد</div>
+                <div id="text-preview" class="font-bold">نموذج نص الترجمة الموحد</div>
             </div>
 
             <!-- Controls Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
-                <!-- Time & Outline -->
+                <!-- Time, Outline & Font Size -->
                 <div class="bg-white rounded-3xl p-6 shadow-md space-y-4 border border-slate-100">
-                    <h3 class="font-bold text-slate-800 border-b pb-2">التوقيت والحواف</h3>
+                    <h3 class="font-bold text-slate-800 border-b pb-2">التوقيت والتنسيق</h3>
                     
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">مقدار الإزاحة الزمني (ثواني)</label>
-                        <input type="number" id="offset-input" step="0.001" value="0" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-center font-bold focus:border-indigo-500 outline-none">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">مقدار الإزاحة (ثواني)</label>
+                            <input type="number" id="offset-input" step="0.001" value="0" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-center font-bold focus:border-indigo-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">حجم الخط (Font Size)</label>
+                            <input type="number" id="font-size" value="48" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-3 text-center font-bold focus:border-indigo-500 outline-none">
+                        </div>
                     </div>
 
                     <div>
@@ -88,14 +94,14 @@
                             <input type="color" id="outline-color" value="#000000" class="w-full h-10 rounded-lg cursor-pointer bg-white">
                         </div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-2 leading-relaxed italic">* سيتم تحويل هذه الألوان تلقائياً لصيغة BGR المتوافقة مع ملفات ASS.</p>
+                    <p class="text-[10px] text-slate-400 mt-2 leading-relaxed italic">* سيتم تعديل حجم الخط والألوان في كافة الأنماط داخل الملفات.</p>
                 </div>
             </div>
 
             <!-- Apply Button -->
             <button id="apply-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-3xl font-bold text-xl shadow-xl shadow-indigo-200 active:scale-95 transition-all flex items-center justify-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                تطبيق الإعدادات وحفظ التعديلات
+                تطبيق التعديلات الشاملة
             </button>
 
             <!-- Files Section -->
@@ -121,6 +127,7 @@
             dropZone: document.getElementById('drop-zone'),
             mainUi: document.getElementById('main-ui'),
             offsetInput: document.getElementById('offset-input'),
+            fontSize: document.getElementById('font-size'),
             outlineSize: document.getElementById('outline-size'),
             primaryColor: document.getElementById('primary-color'),
             secondaryColor: document.getElementById('secondary-color'),
@@ -136,13 +143,13 @@
 
         function updatePreview() {
             ui.preview.style.color = ui.primaryColor.value;
+            ui.preview.style.fontSize = ui.fontSize.value + 'px';
             const size = ui.outlineSize.value;
             const color = ui.outlineColor.value;
-            // محاكاة الـ outline في CSS
             ui.preview.style.webkitTextStroke = `${size}px ${color}`;
         }
 
-        [ui.primaryColor, ui.outlineColor, ui.outlineSize].forEach(el => el.oninput = updatePreview);
+        [ui.primaryColor, ui.outlineColor, ui.outlineSize, ui.fontSize].forEach(el => el.oninput = updatePreview);
 
         ui.dropZone.onclick = () => ui.fileInput.click();
         ui.fileInput.onchange = (e) => handleFiles(e.target.files);
@@ -176,12 +183,12 @@
                         <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-xs uppercase">${f.extension}</div>
                         <div>
                             <p class="text-slate-700 font-bold text-sm truncate max-w-[200px]">${f.name}</p>
-                            <p class="text-[10px] text-slate-400">جاهز للتحميل</p>
+                            <p class="text-[10px] text-slate-400">جاهز للتعديل والتحميل</p>
                         </div>
                     </div>
                     <button onclick="downloadOne(${i})" class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 py-2 px-4 rounded-xl transition-all text-xs font-bold">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        تحميل الملف
+                        تحميل
                     </button>`;
                 ui.fileList.appendChild(div);
             });
@@ -200,7 +207,8 @@
                 primary: hexToAss(ui.primaryColor.value),
                 secondary: hexToAss(ui.secondaryColor.value),
                 outline: hexToAss(ui.outlineColor.value),
-                border: ui.outlineSize.value
+                border: ui.outlineSize.value,
+                size: ui.fontSize.value
             };
 
             filesData = filesData.map(file => ({
@@ -208,14 +216,14 @@
                 modified: processSubtitle(file.content, shift, file.extension, config)
             }));
 
-            showToast("✅ تم تعديل وحفظ كافة الملفات");
+            showToast("✅ تم تحديث التوقيت، الألوان، وحجم الخط");
             renderFiles();
         };
 
         function processSubtitle(text, shift, ext, config) {
             let processed = text;
 
-            // 1. التوقيت
+            // 1. معالجة التوقيت (SRT, VTT, ASS)
             const timestampRegex = /(\d{1,2}:\d{2}:\d{2}[.,]\d{2,3})/g;
             processed = processed.replace(timestampRegex, (match) => {
                 const separator = match.includes(',') ? ',' : '.';
@@ -234,17 +242,19 @@
                 return `${pad(h)}:${pad(m)}:${pad(s)}${separator}${finalMs}`;
             });
 
-            // 2. التنسيق (ASS/SSA)
+            // 2. معالجة التنسيق وحجم الخط (ASS/SSA)
             if (ext === 'ass' || ext === 'ssa') {
                 const lines = processed.split(/\r?\n/);
                 processed = lines.map(line => {
                     if (line.startsWith('Style:')) {
                         const parts = line.split(',');
                         if (parts.length > 18) {
-                            parts[3] = config.primary;
-                            parts[4] = config.secondary;
-                            parts[5] = config.outline;
-                            parts[16] = config.border;
+                            // Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour...
+                            parts[2] = config.size;     // Fontsize
+                            parts[3] = config.primary;  // Primary
+                            parts[4] = config.secondary;// Secondary
+                            parts[5] = config.outline;  // Outline
+                            parts[16] = config.border;  // Outline Thickness
                             return parts.join(',');
                         }
                     }
@@ -267,18 +277,15 @@
                 zip.file(f.name, f.modified);
             });
             const content = await zip.generateAsync({type: "blob"});
-            triggerDownload(content, "Subtitles_Pack.zip", true);
+            triggerDownload(content, "Subtitles_Edited.zip", true);
         };
 
         function triggerDownload(content, filename, isBlob = false) {
             const blob = isBlob ? content : new Blob([content], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; 
-            a.download = filename; 
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
